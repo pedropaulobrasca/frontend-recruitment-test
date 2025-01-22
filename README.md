@@ -49,3 +49,7 @@ To start your `React` server:
 - You can now view the application in the browser.
 
 ![Application Running](src/assets/images/app-running.png)
+
+## Any questions?
+
+Please contact us by email at `tecnologia@hubscontabilidade.com.br`. We do not promise to be able to answer all questions, but we will do our best to get back to you as quickly as possible.
