@@ -6,8 +6,6 @@ The purpose of this test is to assess your logical reasoning ability, as well as
 
 ## The challenge
 
-> This challenge was created to support the `backend` challenge. If you don't have the context for the challenge as a whole, you can read it [here](https://github.com/hubs-contabilidade/backend-recruitment-test).
-
 A customer has requested a very simple `enterprises` management system. Your role is to structure a CRUD-type interface that allows `enterprises` to be visualized, registered, modified and removed from the application. Then, you must integrate these actions with the server though the GraphQL API. You will find the `backend` boilerplate [here](https://github.com/hubs-contabilidade/frontend-recruitment-test). This integration is only required for FullStack Engineering roles. Make sure to check this out before you start to code anything.
 
 ### Important notes
