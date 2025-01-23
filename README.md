@@ -28,7 +28,7 @@ A customer has requested a very simple `enterprises` management system. Your rol
 - Changing the scope of the project too much;
 - Wasting a lot of time doing cool but not very useful things. It's tempting, but focus on finishing what the test asks for first :)
 
-### What we would like to see (but it is not mandatory)
+### What we would like to see
 
 - Beautiful, responsive layouts;
 - Integration with component documentation and testing tools, such as Storybook;
