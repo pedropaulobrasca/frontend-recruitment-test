@@ -32,13 +32,18 @@ A customer has requested a very simple `enterprises` management system. Your rol
 
 - Beautiful, responsive layouts;
 - Integration with component documentation and testing tools, such as Storybook;
-- Unit tests.
+- Unit tests;
+- The application deployed on AWS (preferred) or any other cloud service.
 
 > Please keep in mind that we’re not evaluating whether you can build up an application with a million complex features. Do what you can within your available time. However, remember that the more things you can show, the more points your test will potentially earn.
 
+## Deadline
+
+We expect you to finish your code within `1 week` from the day you received the test.
+
 The rest is up to you! Good luck!
 
-## General instructions
+## General setup instructions
 
 > To run this test, we assume that you already have finished the `backend` setup and have it up and running on your machine. If not, check the steps to achieve it [here](https://github.com/hubs-contabilidade/backend-recruitment-test?tab=readme-ov-file#general-instructions). Also, you’ll need to have `Node >= 14` on your local development machine.
 
