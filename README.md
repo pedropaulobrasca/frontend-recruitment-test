@@ -43,6 +43,12 @@ We expect you to finish your code within `1 week` from the day you received the 
 
 The rest is up to you! Good luck!
 
+### What and how to delivery?
+
+You must send us an email to `tecnologia@hubscontabilidade.com.br` with the links to your repository containing your source code.
+
+The repository must contain a `README.md` file with step-by-step instructions on how to run your application and, if necessary, additional instructions.
+
 ## General setup instructions
 
 > To run this test, we assume that you already have finished the `backend` setup and have it up and running on your machine. If not, check the steps to achieve it [here](https://github.com/hubs-contabilidade/backend-recruitment-test?tab=readme-ov-file#general-instructions). Also, you’ll need to have `Node >= 14` on your local development machine.
