@@ -1,29 +1,27 @@
-import React from "react";
-
-import logo from "./logo.svg";
-import "./App.css";
-
-import { useHelloWorldQuery } from "./generated/graphql";
+import { useEnterprisesQuery } from "./services/graphql/queries/enterprises";
+import type { Enterprise } from "./types/enterprise";
 
 const App = () => {
-  const { data, loading } = useHelloWorldQuery();
+  const { data, loading, error } = useEnterprisesQuery();
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        {!loading && data && (
-          <div>
-            <p>
-              <code>{data?.helloWorld}</code>
-            </p>
-            <p className="App-description">
-              If you can see this, the setup with the API was made successfuly.
-              Now it's up to you. Good luck ☘️
-            </p>
-          </div>
-        )}
-      </header>
+    <div>
+      <h1>Enterprises</h1>
+      <ul>
+        {data.enterprises.map((enterprise: Enterprise) => (
+          <li key={enterprise.id}>
+            <h2>{enterprise.name}</h2>
+            <p>{enterprise.commercial_name}</p>
+            <p>{enterprise.cnpj}</p>
+            <p>{enterprise.description}</p>
+            <p>{new Date(enterprise.inserted_at).toLocaleString("pt-BR")}</p>
+            <p>{new Date(enterprise.updated_at).toLocaleString("pt-BR")}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
