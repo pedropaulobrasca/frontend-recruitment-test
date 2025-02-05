@@ -7,6 +7,8 @@ import { Owner } from '../types/owner';
 import { Enterprise } from '../types/enterprise';
 import { useEnterprisesQuery } from '../services/graphql/queries/enterprises';
 import { useCreateOwnerMutation, useOwnersQuery, useUpdateOwnerMutation } from '../services/graphql/queries/owners';
+import { ownerSchema } from '../schemas/owner.schema';
+import { useZodForm } from '../hooks/useZodForm';
 
 export function OwnersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -29,115 +31,132 @@ export function OwnersPage() {
   const [createOwner] = useCreateOwnerMutation();
   const [updateOwner] = useUpdateOwnerMutation();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const ownerData = {
-      name: formData.get('name')?.toString() || '',
-      document: formData.get('document')?.toString() || '',
-      enterprise_id: formData.get('enterprise_id')?.toString() || '',
+  const OwnerForm = ({ owner }: { owner?: Owner }) => {
+    const { validate, getFieldError } = useZodForm(ownerSchema);
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      
+      if (!validate(formData)) {
+        return;
+      }
+
+      const ownerData = {
+        name: formData.get('name')?.toString() || '',
+        document: formData.get('document')?.toString() || '',
+        enterprise_id: formData.get('enterprise_id')?.toString() || '',
+      };
+
+      if (editingOwner) {
+        try {
+          await updateOwner({
+            variables: {
+              id: editingOwner.id,
+              name: ownerData.name,
+              document: ownerData.document,
+              enterprise_id: ownerData.enterprise_id
+            }
+          });
+          refetch();
+        } catch (error) {
+          console.error('Error updating owner:', error);
+        }
+      } else {
+        try {
+          await createOwner({
+            variables: {
+              name: ownerData.name,
+              document: ownerData.document,
+              enterprise_id: ownerData.enterprise_id
+            }
+          });
+          refetch();
+        } catch (error) {
+          console.error('Error creating owner:', error);
+        }
+      }
+
+      setIsCreateModalOpen(false);
+      setEditingOwner(null);
     };
 
-    if (editingOwner) {
-      try {
-        await updateOwner({
-          variables: {
-            id: editingOwner.id,
-            name: ownerData.name,
-            document: ownerData.document,
-            enterprise_id: ownerData.enterprise_id
-          }
-        });
-        refetch();
-      } catch (error) {
-        console.error('Error updating owner:', error);
-      }
-    } else {
-      try {
-        await createOwner({
-          variables: {
-            name: ownerData.name,
-            document: ownerData.document,
-            enterprise_id: ownerData.enterprise_id
-          }
-        });
-        refetch();
-      } catch (error) {
-        console.error('Error creating owner:', error);
-      }
-    }
-
-    setIsCreateModalOpen(false);
-    setEditingOwner(null);
-  };
-
-  const OwnerForm = ({ owner }: { owner?: Owner }) => (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <Input
-        label="Name"
-        name="name"
-        id="name"
-        defaultValue={owner?.name}
-        required
-        placeholder="Enter owner name"
-      />
-
-      <Input
-        label="Document"
-        name="document"
-        id="document"
-        defaultValue={owner?.document}
-        required
-        placeholder="Enter document number"
-      />
-
-      <div className="space-y-1">
-        <label htmlFor="enterprise_id" className="block text-sm font-medium text-gray-700">
-          Enterprise
-        </label>
-        <select
-          name="enterprise_id"
-          id="enterprise_id"
-          defaultValue={owner?.enterprise.id}
+    return (
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <Input
+          label="Name"
+          name="name"
+          id="name"
+          defaultValue={owner?.name}
           required
-          className="w-full px-3 py-2 bg-white border rounded-lg border-gray-300 
-                   focus:border-blue-500 focus:ring-1 focus:ring-blue-500
-                   disabled:bg-gray-100 disabled:cursor-not-allowed
-                   text-gray-900 transition-colors duration-200"
-        >
-          <option value="">Select an enterprise</option>
-          {enterprises.map((enterprise) => (
-            <option key={enterprise.id} value={enterprise.id}>
-              {enterprise.name}
-            </option>
-          ))}
-        </select>
-      </div>
+          placeholder="Digite o nome do proprietário"
+          error={getFieldError('name')}
+        />
 
-      <div className="flex justify-end space-x-3">
-        <button
-          type="button"
-          onClick={() => {
-            setIsCreateModalOpen(false);
-            setEditingOwner(null);
-          }}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 
-                   rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 
-                   focus:ring-offset-2 focus:ring-blue-500"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent 
-                   rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 
-                   focus:ring-offset-2 focus:ring-blue-500"
-        >
-          {owner ? 'Update' : 'Create'}
-        </button>
-      </div>
-    </form>
-  );
+        <Input
+          label="Document"
+          name="document"
+          id="document"
+          defaultValue={owner?.document}
+          required
+          placeholder="Digite o CPF (somente números)"
+          error={getFieldError('document')}
+          maxLength={14}
+          pattern="^\d{11}$|^\d{14}$"
+        />
+
+        <div className="space-y-1">
+          <label htmlFor="enterprise_id" className="block text-sm font-medium text-gray-700">
+            Enterprise
+          </label>
+          <select
+            name="enterprise_id"
+            id="enterprise_id"
+            defaultValue={owner?.enterprise.id}
+            required
+            className={`w-full px-3 py-2 bg-white border rounded-lg border-gray-300 
+                     focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                     disabled:bg-gray-100 disabled:cursor-not-allowed
+                     text-gray-900 transition-colors duration-200
+                     ${getFieldError('enterprise_id') ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+          >
+            <option value="">Selecione uma empresa</option>
+            {enterprises.map((enterprise) => (
+              <option key={enterprise.id} value={enterprise.id}>
+                {enterprise.name}
+              </option>
+            ))}
+          </select>
+          {getFieldError('enterprise_id') && (
+            <p className="text-sm text-red-600">{getFieldError('enterprise_id')}</p>
+          )}
+        </div>
+
+        <div className="flex justify-end space-x-3">
+          <button
+            type="button"
+            onClick={() => {
+              setIsCreateModalOpen(false);
+              setEditingOwner(null);
+            }}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 
+                     rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 
+                     focus:ring-offset-2 focus:ring-blue-500"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent 
+                     rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 
+                     focus:ring-offset-2 focus:ring-blue-500"
+          >
+            {owner ? 'Update' : 'Create'}
+          </button>
+        </div>
+      </form>
+    );
+  };
 
   return (
     <div>
