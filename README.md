@@ -12,10 +12,8 @@ Este é o frontend do Sistema de Gerenciamento de Empresas, desenvolvido com **R
 
 - Interface intuitiva para gerenciamento de empresas e proprietários
 - Dashboard com visualização de dados em tempo real
-- Sistema de autenticação e autorização
 - Integração completa com API GraphQL
 - Layout responsivo e moderno
-- Temas claro e escuro
 - Validação de formulários
 
 ## 🛠️ Tecnologias Utilizadas
@@ -23,17 +21,13 @@ Este é o frontend do Sistema de Gerenciamento de Empresas, desenvolvido com **R
 - **React 18+**: Biblioteca JavaScript para construção de interfaces
 - **TypeScript**: Superset tipado do JavaScript
 - **Apollo Client**: Cliente GraphQL para gerenciamento de dados
-- **Material-UI**: Biblioteca de componentes visuais
 - **React Router**: Gerenciamento de rotas na aplicação
-- **React Hook Form**: Gerenciamento eficiente de formulários
-- **Yup**: Validação de schemas para formulários
-- **Jest/Testing Library**: Ferramentas para testes automatizados
-- **ESLint/Prettier**: Padronização e formatação de código
+- **Zod**: Validação de schemas para formulários
 
 ## ⚙️ Pré-requisitos
 
 - **Node.js** 16 ou superior
-- **npm** ou **yarn**
+- **yarn**
 - Backend GraphQL em execução
 
 ## 🔧 Configuração do Ambiente
@@ -55,17 +49,13 @@ cp .env.example .env
 3. **Instale as dependências:**
 
 ```bash
-npm install
-# ou
 yarn install
 ```
 
 4. **Inicie o servidor de desenvolvimento:**
 
 ```bash
-npm run dev
-# ou
-yarn dev
+yarn start
 ```
 
 A aplicação estará disponível em **localhost:3000**.
@@ -75,43 +65,34 @@ A aplicação estará disponível em **localhost:3000**.
 ```
 frontend-recruitment-test/
 ├── src/
+│   ├── assets/             # Arquivos estáticos
 │   ├── components/         # Componentes reutilizáveis
-│   ├── pages/              # Páginas da aplicação
 │   ├── hooks/              # Hooks customizados
+│   ├── pages/              # Páginas da aplicação
+│   ├── schemas/            # Definições de schemas
 │   ├── services/           # Serviços e integrações
-│   ├── graphql/            # Queries e mutations GraphQL
-│   ├── contexts/           # Contextos React
-│   ├── utils/              # Funções utilitárias
-│   ├── styles/             # Estilos globais
 │   └── types/              # Definições de tipos
-├── public/                 # Arquivos estáticos
-├── tests/                  # Testes automatizados
-└── config/                 # Configurações do projeto
+└── public/                 # Arquivos estáticos publicos
 ```
 
 ## 🗒️ Principais Componentes
 
 - **DataTable**: Tabela de dados com paginação e filtros
-- **EnterpriseForm**: Formulário de cadastro/edição de empresas
-- **OwnerForm**: Formulário de cadastro/edição de proprietários
 - **Dashboard**: Painel principal com métricas
 - **Layout**: Estrutura base da aplicação
+- **Pagination**: Componente de paginação
 
 ## 🧪 Testes
 
-Execute os testes com:
+Execute os testes com (Sem testes implementados até o momento):
 
 ```bash
-npm test
-# ou
 yarn test
 ```
 
 Para verificar a cobertura de testes:
 
 ```bash
-npm test --coverage
-# ou
 yarn test --coverage
 ```
 
@@ -126,17 +107,8 @@ yarn test --coverage
 ### Build Manual
 
 ```bash
-npm run build
-# ou
 yarn build
 ```
-
-## 📈 Performance
-
-- **Lazy Loading** de componentes
-- Otimização de imagens
-- **Caching** de dados com GraphQL
-- **Code Splitting** automático
 
 ## 📄 Licença
 
