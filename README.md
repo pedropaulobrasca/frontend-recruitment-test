@@ -1,7 +1,7 @@
 # Sistema de Gerenciamento de Empresas - Frontend
 
 <div align="center">
-  <img src="assets/images/dashboard.png" alt="Dashboard do Sistema" width="600">
+  <img src="src/assets/images/dashboard.png" alt="Dashboard do Sistema" width="600">
 </div>
 
 ## 📋 Sobre o Projeto
