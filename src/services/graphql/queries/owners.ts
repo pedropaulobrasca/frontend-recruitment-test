@@ -1,17 +1,25 @@
 import { gql, useQuery } from '@apollo/client';
 
 const OWNERS_QUERY = gql`
-  query Owners {
-    owners {
-      id
-      name
-      document
-      enterprise {
+  query Owners($pageSize: Int!, $pageNumber: Int!) {
+    owners(pageSize: $pageSize, pageNumber: $pageNumber) {
+      entries {
         id
         name
+        document
+        enterprise {
+          id
+          name
+        }
+        inserted_at
+        updated_at
       }
-      inserted_at
-      updated_at
+      pageInfo {
+        pageSize
+        pageNumber
+        totalEntries
+        totalPages
+      }
     }
   }
 `;
@@ -48,8 +56,13 @@ const FILTER_OWNERS_QUERY = gql`
   }
 `;
 
-export function useOwnersQuery() {
-  return useQuery(OWNERS_QUERY);
+export function useOwnersQuery(pageSize: number = 10, pageNumber: number = 1) {
+  return useQuery(OWNERS_QUERY, {
+    variables: {
+      pageSize,
+      pageNumber
+    }
+  });
 }
 
 export function useOwnerQuery(id: string) {

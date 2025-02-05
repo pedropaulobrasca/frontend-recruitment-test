@@ -1,12 +1,16 @@
-import React from 'react';
-import { DataTable, Column } from '../components/DataTable';
-import { formatDistanceToNow } from 'date-fns';
-import { AuditLog } from '../types/audit_log';
-import { useAuditLogsQuery } from '../services/graphql/queries/audit_logs';
+import React from "react";
+import { AuditLog } from "../types/audit_log";
+import { useAuditLogsQuery } from "../services/graphql/queries/audit_logs";
+import { DataTable, Column } from "../components/DataTable";
+import { formatDistanceToNow } from "date-fns";
 
 export function AuditLogsPage() {
-  const { data } = useAuditLogsQuery();
-  const auditLogs: AuditLog[] = data?.auditLogs || [];
+  const [pageSize] = React.useState(10);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const { data } = useAuditLogsQuery(pageSize, currentPage);
+  const auditLogs: AuditLog[] = data?.auditLogs?.entries || [];
+  const pageInfo = data?.auditLogs?.pageInfo;
 
   const columns: Column<AuditLog>[] = [
     {
@@ -40,14 +44,23 @@ export function AuditLogsPage() {
     },
   ];
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div>
-      <div className="mb-6">
+      <div className="mb-6 flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-gray-900">Audit Logs</h1>
       </div>
 
       <div className="bg-white shadow rounded-lg">
-        <DataTable data={auditLogs} columns={columns} />
+        <DataTable
+          data={auditLogs}
+          columns={columns}
+          pageInfo={pageInfo}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

@@ -11,9 +11,12 @@ import { useZodForm } from '../hooks/useZodForm';
 export function EnterprisesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [editingEnterprise, setEditingEnterprise] = React.useState<Enterprise | null>(null);
-  
-  const { data, refetch } = useEnterprisesQuery();
-  const enterprises: Enterprise[] = data?.enterprises || [];
+  const [pageSize] = React.useState(10);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  const { data, refetch } = useEnterprisesQuery(pageSize, currentPage);
+  const enterprises: Enterprise[] = data?.enterprises?.entries || [];
+  const pageInfo = data?.enterprises?.pageInfo;
 
   const columns: Column<Enterprise>[] = [
     { header: 'Name', accessor: (enterprise: Enterprise) => enterprise.name },
@@ -36,7 +39,7 @@ export function EnterprisesPage() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
-      
+
       if (!validate(formData)) {
         return;
       }
@@ -165,6 +168,10 @@ export function EnterprisesPage() {
     );
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">
@@ -182,7 +189,14 @@ export function EnterprisesPage() {
         <DataTable
           data={enterprises}
           columns={columns}
-          onRowClick={(enterprise) => setEditingEnterprise(enterprise)}
+          actions={{
+            edit: (enterprise: Enterprise) => {
+              setEditingEnterprise(enterprise);
+              setIsCreateModalOpen(true);
+            },
+          }}
+          pageInfo={pageInfo}
+          onPageChange={handlePageChange}
         />
       </div>
 

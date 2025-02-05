@@ -13,10 +13,13 @@ import { useZodForm } from '../hooks/useZodForm';
 export function OwnersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
   const [editingOwner, setEditingOwner] = React.useState<Owner | null>(null);
+  const [pageSize] = React.useState(10);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  const { data: ownerData, refetch } = useOwnersQuery();
+  const { data: ownerData, refetch } = useOwnersQuery(pageSize, currentPage);
   const { data: enterpriseData } = useEnterprisesQuery();
-  const owners: Owner[] = ownerData?.owners || [];
+  const owners: Owner[] = ownerData?.owners?.entries || [];
+  const pageInfo = ownerData?.owners?.pageInfo;
   const enterprises: Enterprise[] = enterpriseData?.enterprises || [];
 
   const columns: Column<Owner>[] = [
@@ -37,7 +40,7 @@ export function OwnersPage() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
-      
+
       if (!validate(formData)) {
         return;
       }
@@ -158,6 +161,10 @@ export function OwnersPage() {
     );
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">
@@ -175,7 +182,14 @@ export function OwnersPage() {
         <DataTable
           data={owners}
           columns={columns}
-          onRowClick={(owner) => setEditingOwner(owner)}
+          actions={{
+            edit: (owner: Owner) => {
+              setEditingOwner(owner);
+              setIsCreateModalOpen(true);
+            },
+          }}
+          pageInfo={pageInfo}
+          onPageChange={handlePageChange}
         />
       </div>
 

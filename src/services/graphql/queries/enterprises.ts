@@ -1,15 +1,23 @@
 import { gql, useQuery } from '@apollo/client';
 
 const ENTERPRISES_QUERY = gql`
-  query Enterprises {
-    enterprises {
-      id
-      name
-      commercial_name
-      cnpj
-      description
-      inserted_at
-      updated_at
+  query Enterprises($pageSize: Int!, $pageNumber: Int!) {
+    enterprises(pageSize: $pageSize, pageNumber: $pageNumber) {
+      entries {
+        id
+        name
+        commercial_name
+        cnpj
+        description
+        inserted_at
+        updated_at
+      }
+      pageInfo {
+        pageSize
+        pageNumber
+        totalEntries
+        totalPages
+      }
     }
   }
 `;
@@ -42,8 +50,14 @@ const FILTER_ENTERPRISES_QUERY = gql`
   }
 `;
 
-export function useEnterprisesQuery() {
-  return useQuery(ENTERPRISES_QUERY);
+export function useEnterprisesQuery(pageSize: number = 10, pageNumber: number = 1) {
+  return useQuery(ENTERPRISES_QUERY, {
+    variables: {
+      pageSize,
+      pageNumber
+    },
+    fetchPolicy: 'network-only'
+  });
 }
 
 export function useEnterpriseQuery(id: string) {
