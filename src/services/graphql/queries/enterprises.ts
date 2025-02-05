@@ -37,15 +37,27 @@ const ENTERPRISE_QUERY = gql`
 `;
 
 const FILTER_ENTERPRISES_QUERY = gql`
-  query FilterEnterprises($filters: EnterpriseFilter) {
-    filterEnterprises(filters: $filters) {
-      id
-      name
-      commercial_name
-      cnpj
-      description
-      inserted_at
-      updated_at
+  query FilterEnterprises($pageNumber: Int!, $pageSize: Int!, $filters: EnterpriseFilter) {
+    filterEnterprises(
+      pageNumber: $pageNumber,
+      pageSize: $pageSize,
+      filters: $filters
+    ) {
+      entries {
+        id
+        name
+        commercial_name
+        cnpj
+        description
+        inserted_at
+        updated_at
+      }
+      pageInfo {
+        pageSize
+        pageNumber
+        totalEntries
+        totalPages
+      }
     }
   }
 `;

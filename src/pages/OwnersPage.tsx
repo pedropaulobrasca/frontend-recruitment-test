@@ -6,9 +6,10 @@ import { UserPlus } from 'lucide-react';
 import { Owner } from '../types/owner';
 import { Enterprise } from '../types/enterprise';
 import { useEnterprisesQuery } from '../services/graphql/queries/enterprises';
-import { useCreateOwnerMutation, useOwnersQuery, useUpdateOwnerMutation } from '../services/graphql/queries/owners';
+import { useCreateOwnerMutation, useDeleteOwnerMutation, useOwnersQuery, useUpdateOwnerMutation } from '../services/graphql/queries/owners';
 import { ownerSchema } from '../schemas/owner.schema';
 import { useZodForm } from '../hooks/useZodForm';
+import toast from 'react-hot-toast';
 
 export function OwnersPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -16,12 +17,15 @@ export function OwnersPage() {
   const [pageSize] = React.useState(10);
   const [currentPage, setCurrentPage] = React.useState(1);
 
+  // Busca dados dos proprietários e empresas da API
   const { data: ownerData, refetch } = useOwnersQuery(pageSize, currentPage);
   const { data: enterpriseData } = useEnterprisesQuery();
+
   const owners: Owner[] = ownerData?.owners?.entries || [];
   const pageInfo = ownerData?.owners?.pageInfo;
-  const enterprises: Enterprise[] = enterpriseData?.enterprises || [];
+  const enterprises: Enterprise[] = enterpriseData?.enterprises?.entries || [];
 
+  // Configuração das colunas da tabela
   const columns: Column<Owner>[] = [
     { header: 'Name', accessor: 'name' as keyof Owner },
     { header: 'Document', accessor: 'document' as keyof Owner },
@@ -31,9 +35,12 @@ export function OwnersPage() {
     }
   ];
 
+  // Mutations para criar e atualizar proprietários
   const [createOwner] = useCreateOwnerMutation();
   const [updateOwner] = useUpdateOwnerMutation();
+  const [deleteOwner] = useDeleteOwnerMutation();
 
+  // Formulario para criacao e edicao de proprietarios
   const OwnerForm = ({ owner }: { owner?: Owner }) => {
     const { validate, getFieldError } = useZodForm(ownerSchema);
 
@@ -62,8 +69,10 @@ export function OwnersPage() {
             }
           });
           refetch();
+          toast.success('Owner updated successfully');
         } catch (error) {
           console.error('Error updating owner:', error);
+          toast.error('Error updating owner');
         }
       } else {
         try {
@@ -75,8 +84,10 @@ export function OwnersPage() {
             }
           });
           refetch();
+          toast.success('Owner created successfully');
         } catch (error) {
           console.error('Error creating owner:', error);
+          toast.error('Error creating owner');
         }
       }
 
@@ -161,6 +172,7 @@ export function OwnersPage() {
     );
   };
 
+  // Handle para paginação
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -187,6 +199,22 @@ export function OwnersPage() {
               setEditingOwner(owner);
               setIsCreateModalOpen(true);
             },
+            delete: async (owner: Owner) => {
+              if (window.confirm('Tem certeza que deseja excluir este proprietário?')) {
+                try {
+                  await deleteOwner({
+                    variables: {
+                      id: owner.id
+                    }
+                  });
+                  refetch();
+                  toast.success('Proprietário excluído com sucesso');
+                } catch (error) {
+                  console.error('Erro ao excluir proprietário:', error);
+                  toast.error('Erro ao excluir proprietário');
+                }
+              }
+            }
           }}
           pageInfo={pageInfo}
           onPageChange={handlePageChange}

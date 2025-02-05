@@ -8,10 +8,12 @@ export function AuditLogsPage() {
   const [pageSize] = React.useState(10);
   const [currentPage, setCurrentPage] = React.useState(1);
 
+  // Busca dados dos audit logs da API
   const { data } = useAuditLogsQuery(pageSize, currentPage);
   const auditLogs: AuditLog[] = data?.auditLogs?.entries || [];
   const pageInfo = data?.auditLogs?.pageInfo;
 
+  // Configuração das colunas da tabela
   const columns: Column<AuditLog>[] = [
     {
       header: 'Time',
@@ -44,6 +46,7 @@ export function AuditLogsPage() {
     },
   ];
 
+  // Handle para paginação
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };

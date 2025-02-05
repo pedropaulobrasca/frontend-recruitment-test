@@ -13,6 +13,7 @@ interface DataTableProps<T> {
   onRowClick?: (item: T) => void;
   actions?: {
     edit: (item: T) => void;
+    delete: (item: T) => void;
   };
   pageInfo?: {
     pageNumber: number;
@@ -72,15 +73,25 @@ export function DataTable<T>(
                   </td>
                 ))}
                 {actions && (
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex items-center justify-end gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         actions.edit(item);
                       }}
-                      className="text-indigo-600 hover:text-indigo-900"
+                      className="text-indigo-600 hover:text-indigo-900 cursor-pointer"
                     >
                       Editar
+                    </button>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        actions.delete(item);
+                      }}
+                      className="text-red-600 hover:text-red-900 cursor-pointer"
+                    >
+                      Excluir
                     </button>
                   </td>
                 )}

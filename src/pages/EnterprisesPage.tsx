@@ -3,10 +3,11 @@ import { DataTable, Column } from '../components/DataTable';
 import { Modal } from '../components/Modal';
 import { Building2 } from 'lucide-react';
 import { Enterprise } from '../types/enterprise';
-import { useEnterprisesQuery, useCreateEnterpriseMutation, useUpdateEnterpriseMutation } from '../services/graphql/queries/enterprises';
+import { useEnterprisesQuery, useCreateEnterpriseMutation, useUpdateEnterpriseMutation, useDeleteEnterpriseMutation } from '../services/graphql/queries/enterprises';
 import { Input } from '../components/Input';
 import { enterpriseSchema } from '../schemas/enterprise.schema';
 import { useZodForm } from '../hooks/useZodForm';
+import toast from 'react-hot-toast';
 
 export function EnterprisesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -14,10 +15,12 @@ export function EnterprisesPage() {
   const [pageSize] = React.useState(10);
   const [currentPage, setCurrentPage] = React.useState(1);
 
+  // Busca dados das empresas da API
   const { data, refetch } = useEnterprisesQuery(pageSize, currentPage);
   const enterprises: Enterprise[] = data?.enterprises?.entries || [];
   const pageInfo = data?.enterprises?.pageInfo;
 
+  // Configuração das colunas da tabela
   const columns: Column<Enterprise>[] = [
     { header: 'Name', accessor: (enterprise: Enterprise) => enterprise.name },
     { header: 'Commercial Name', accessor: (enterprise: Enterprise) => enterprise.commercial_name },
@@ -30,9 +33,12 @@ export function EnterprisesPage() {
     },
   ];
 
+  // Mutations para criar e atualizar empresas
   const [createEnterprise] = useCreateEnterpriseMutation();
   const [updateEnterprise] = useUpdateEnterpriseMutation();
+  const [deleteEnterprise] = useDeleteEnterpriseMutation();
 
+  // Formulario para criacao e edicao de empresas
   const EnterpriseForm = ({ enterprise }: { enterprise?: Enterprise }) => {
     const { validate, getFieldError } = useZodForm(enterpriseSchema);
 
@@ -63,8 +69,10 @@ export function EnterprisesPage() {
             }
           });
           refetch();
+          toast.success('Enterprise updated successfully');
         } catch (error) {
           console.error('Error updating enterprise:', error);
+          toast.error('Error updating enterprise');
         }
       } else {
         try {
@@ -77,8 +85,10 @@ export function EnterprisesPage() {
             }
           });
           refetch();
+          toast.success('Enterprise created successfully');
         } catch (error) {
           console.error('Error creating enterprise:', error);
+          toast.error('Error creating enterprise');
         }
       }
 
@@ -168,6 +178,7 @@ export function EnterprisesPage() {
     );
   };
 
+  // Configuração da paginacao
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -194,6 +205,22 @@ export function EnterprisesPage() {
               setEditingEnterprise(enterprise);
               setIsCreateModalOpen(true);
             },
+            delete: async (enterprise: Enterprise) => {
+              if (window.confirm('Tem certeza que deseja excluir esta empresa?')) {
+                try {
+                  await deleteEnterprise({
+                    variables: {
+                      id: enterprise.id
+                    }
+                  });
+                  refetch();
+                  toast.success('Empresa excluída com sucesso');
+                } catch (error) {
+                  console.error('Erro ao excluir empresa:', error);
+                  toast.error('Erro ao excluir empresa');
+                }
+              }
+            }
           }}
           pageInfo={pageInfo}
           onPageChange={handlePageChange}
