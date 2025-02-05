@@ -4,6 +4,7 @@ import { Modal } from '../components/Modal';
 import { Building2 } from 'lucide-react';
 import { Enterprise } from '../types/enterprise';
 import { useEnterprisesQuery, useCreateEnterpriseMutation, useUpdateEnterpriseMutation } from '../services/graphql/queries/enterprises';
+import { Input } from '../components/Input';
 
 export function EnterprisesPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = React.useState(false);
@@ -73,50 +74,35 @@ export function EnterprisesPage() {
   };
 
   const EnterpriseForm = ({ enterprise }: { enterprise?: Enterprise }) => (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          defaultValue={enterprise?.name}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <Input
+        label="Name"
+        name="name"
+        id="name"
+        defaultValue={enterprise?.name}
+        required
+        placeholder="Enter enterprise name"
+      />
 
-      <div>
-        <label htmlFor="commercial_name" className="block text-sm font-medium text-gray-700">
-          Commercial Name
-        </label>
-        <input
-          type="text"
-          name="commercial_name"
-          id="commercial_name"
-          defaultValue={enterprise?.commercial_name}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
+      <Input
+        label="Commercial Name"
+        name="commercial_name"
+        id="commercial_name"
+        defaultValue={enterprise?.commercial_name}
+        required
+        placeholder="Enter commercial name"
+      />
 
-      <div>
-        <label htmlFor="cnpj" className="block text-sm font-medium text-gray-700">
-          CNPJ
-        </label>
-        <input
-          type="text"
-          name="cnpj"
-          id="cnpj"
-          defaultValue={enterprise?.cnpj}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
+      <Input
+        label="CNPJ"
+        name="cnpj"
+        id="cnpj"
+        defaultValue={enterprise?.cnpj}
+        required
+        placeholder="Enter CNPJ"
+      />
 
-      <div>
+      <div className="space-y-1">
         <label htmlFor="description" className="block text-sm font-medium text-gray-700">
           Description
         </label>
@@ -124,8 +110,13 @@ export function EnterprisesPage() {
           name="description"
           id="description"
           defaultValue={enterprise?.description}
+          required
           rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="w-full px-3 py-2 bg-white border rounded-lg border-gray-300 
+                   focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                   disabled:bg-gray-100 disabled:cursor-not-allowed
+                   placeholder:text-gray-400 transition-colors duration-200"
+          placeholder="Enter enterprise description"
         />
       </div>
 
@@ -136,13 +127,17 @@ export function EnterprisesPage() {
             setIsCreateModalOpen(false);
             setEditingEnterprise(null);
           }}
-          className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md"
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 
+                   rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 
+                   focus:ring-offset-2 focus:ring-blue-500"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent 
+                   rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 
+                   focus:ring-offset-2 focus:ring-blue-500"
         >
           {enterprise ? 'Update' : 'Create'}
         </button>

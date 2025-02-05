@@ -1,6 +1,7 @@
 import React from 'react';
 import { Column, DataTable } from '../components/DataTable';
 import { Modal } from '../components/Modal';
+import { Input } from '../components/Input';
 import { UserPlus } from 'lucide-react';
 import { Owner } from '../types/owner';
 import { Enterprise } from '../types/enterprise';
@@ -71,36 +72,26 @@ export function OwnersPage() {
   };
 
   const OwnerForm = ({ owner }: { owner?: Owner }) => (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name
-        </label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          defaultValue={owner?.name}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <Input
+        label="Name"
+        name="name"
+        id="name"
+        defaultValue={owner?.name}
+        required
+        placeholder="Enter owner name"
+      />
 
-      <div>
-        <label htmlFor="document" className="block text-sm font-medium text-gray-700">
-          Document
-        </label>
-        <input
-          type="text"
-          name="document"
-          id="document"
-          defaultValue={owner?.document}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
-      </div>
+      <Input
+        label="Document"
+        name="document"
+        id="document"
+        defaultValue={owner?.document}
+        required
+        placeholder="Enter document number"
+      />
 
-      <div>
+      <div className="space-y-1">
         <label htmlFor="enterprise_id" className="block text-sm font-medium text-gray-700">
           Enterprise
         </label>
@@ -109,7 +100,10 @@ export function OwnersPage() {
           id="enterprise_id"
           defaultValue={owner?.enterprise.id}
           required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="w-full px-3 py-2 bg-white border rounded-lg border-gray-300 
+                   focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                   disabled:bg-gray-100 disabled:cursor-not-allowed
+                   text-gray-900 transition-colors duration-200"
         >
           <option value="">Select an enterprise</option>
           {enterprises.map((enterprise) => (
@@ -127,13 +121,17 @@ export function OwnersPage() {
             setIsCreateModalOpen(false);
             setEditingOwner(null);
           }}
-          className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300 rounded-md"
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 
+                   rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 
+                   focus:ring-offset-2 focus:ring-blue-500"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent 
+                   rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 
+                   focus:ring-offset-2 focus:ring-blue-500"
         >
           {owner ? 'Update' : 'Create'}
         </button>
