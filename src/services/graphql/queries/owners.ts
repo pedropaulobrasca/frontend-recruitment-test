@@ -59,3 +59,5 @@ export function useOwnerQuery(id: string) {
 export function useFilterOwnersQuery(filters: { name?: string, document?: string, enterprise_id?: string }) {
   return useQuery(FILTER_OWNERS_QUERY, { variables: { filters } });
 }
+
+export { useCreateOwnerMutation, useUpdateOwnerMutation, useDeleteOwnerMutation } from '../mutations/owners';

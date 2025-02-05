@@ -2,7 +2,10 @@ export type Owner = {
   id: string;
   name: string;
   document: string;
-  enterprise_id: string;
+  enterprise: {
+    id: string;
+    name: string;
+  };
   inserted_at: string;
   updated_at: string;
 };

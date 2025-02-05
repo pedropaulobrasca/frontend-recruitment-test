@@ -53,3 +53,5 @@ export function useEnterpriseQuery(id: string) {
 export function useFilterEnterprisesQuery(filters: { name?: string, commercial_name?: string, cnpj?: string, description?: string }) {
   return useQuery(FILTER_ENTERPRISES_QUERY, { variables: { filters } });
 }
+
+export { useCreateEnterpriseMutation, useUpdateEnterpriseMutation, useDeleteEnterpriseMutation } from '../mutations/enterprises';

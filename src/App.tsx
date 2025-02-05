@@ -1,20 +1,20 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { useEnterprisesQuery } from "./services/graphql/queries/enterprises";
-import type { Enterprise } from "./types/enterprise";
-import { Home } from "./pages/home";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
+import { Layout } from "./components/Layout";
+import { EnterprisesPage } from "./pages/EnterprisesPage";
+import { OwnersPage } from "./pages/OwnersPage";
+import { AuditLogsPage } from "./pages/AuditLogsPage";
 
 const App = () => {
-  const { data, loading, error } = useEnterprisesQuery();
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<EnterprisesPage />} />
+          <Route path="owners" element={<OwnersPage />} />
+          <Route path="audit-logs" element={<AuditLogsPage />} />
+        </Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 };
 
